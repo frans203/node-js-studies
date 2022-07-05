@@ -1,7 +1,6 @@
-const http = require("http");
 const fs = require("fs");
 
-const server = http.createServer((req, res) => {
+const requestHandler = (req, res) => {
   const url = req.url;
   const method = req.method;
   if (url === "/") {
@@ -17,18 +16,20 @@ const server = http.createServer((req, res) => {
   if (url === "/message" && method === "POST") {
     const body = [];
     req.on("data", (chunk) => {
-      console.log(chunk);
       body.push(chunk);
     });
-    req.on("end", () => {
+    //returning like that the funcion will be execute async and the next lines wont be executed
+    return req.on("end", () => {
+      //execute async
       const parseBody = Buffer.concat(body).toString();
       const message = parseBody.split("=")[1];
-      fs.writeFileSync("message.txt", message);
+      fs.writeFile("message.txt", message, (error) => {
+        res.statusCode = 302;
+        res.setHeader("Location", "/");
+        return res.end();
+      });
     });
-
-    res.statusCode = 302;
-    res.setHeader("Location", "/");
-    return res.end();
+    //we need to put these lines after the req.on(end)
   }
 
   res.setHeader("Content-Type", "text/html");
@@ -36,6 +37,9 @@ const server = http.createServer((req, res) => {
   res.write("<body><h1>HEADER</h1></body>");
   res.write("</html>");
   return res.end();
-});
+};
 
-server.listen(3006);
+// module.exports = requestHandler;
+// module.exports = {handler:requestHandler}
+// module.exports.handler = requestHandler; //exports as a property of routes file
+exports.handler = requestHandler; //exports as a property of routes file
