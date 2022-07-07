@@ -5,11 +5,12 @@
   "main": "practice.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node practice.js"
+    "start": "nodemon practice.js"
   },
   "author": "fs",
   "license": "ISC",
   "dependencies": {
+    "express": "^4.18.1",
     "nodemon": "^2.0.19"
   }
 }
