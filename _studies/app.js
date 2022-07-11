@@ -1,30 +1,20 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-
+const path = require("path");
 const app = express();
+const rootDir = require("./util/path");
+
+const shopRoute = require("./routes/shop");
+const adminRoute = require("./routes/admin");
 
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.static(path.join(__dirname, "public")));
 
-app.use("/", (req, res, next) => {
-  console.log("this always runs");
-  next();
-});
+app.use("/admin", adminRoute);
+app.use(shopRoute);
 
-app.use("/add-product", (req, res, next) => {
-  console.log("add product");
-  res.send(
-    "<form action='/product' method='POST'><input type='text' name='title'/><button type='submit'>Add product</button></form>"
-  );
-});
-
-app.use("/product", (req, res, next) => {
-  console.log(req.body);
-  res.redirect("/");
-});
-
-app.use("/", (req, res, next) => {
-  console.log("homepage");
-  res.send("<h1>homepage!</h1>");
+app.use((req, res, next) => {
+  res.sendFile(path.join(rootDir, "views", "404.html"));
 });
 
 app.listen(3000);
