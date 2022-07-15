@@ -4,7 +4,7 @@ const bodyParser = require("body-parser");
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
 const expressHbs = require("express-handlebars");
-const productsController = require("./controllers/products");
+const errorController = require("./controllers/error");
 const app = express();
 
 //REMEMBER: LEAVE EVERYTHING ABOUT EJS ONLY, WHEN GO TO STUDIES
@@ -28,7 +28,7 @@ app.use(express.static(path.join(__dirname, "public"))); //user is able to acces
 app.use(shopRoutes);
 app.use("/admin", adminRoutes);
 
-app.use(productsController.notFound);
+app.use(errorController.get404);
 
 app.listen(3000);
 
