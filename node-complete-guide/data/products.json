@@ -1,1 +1,8 @@
-[{"title":"DUNE"}]
+[
+  {
+    "title": "Teste",
+    "imageUrl": "https://files.tecnoblog.net/wp-content/uploads/2019/05/book-3610618_1280.jpg",
+    "description": "aaaaaaaaaa",
+    "price": "123"
+  }
+]
