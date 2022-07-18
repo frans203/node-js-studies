@@ -1,8 +1,9 @@
 [
   {
-    "title": "Teste",
-    "imageUrl": "https://files.tecnoblog.net/wp-content/uploads/2019/05/book-3610618_1280.jpg",
-    "description": "aaaaaaaaaa",
-    "price": "123"
+    "title": "SHINING",
+    "imageUrl": "https://images-na.ssl-images-amazon.com/images/I/81QckmGleYL.jpg",
+    "description": "The Shining is a 1977 horror novel by American author Stephen King. It is King's third published novel and first hardback bestseller; its success firmly established King as a preeminent author in the horror genre.",
+    "price": "22.99",
+    "id": "0.2808950152875671"
   }
 ]
