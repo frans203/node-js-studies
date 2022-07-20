@@ -10,23 +10,22 @@ module.exports = class Cart {
       if (!err) {
         cart = JSON.parse(fileContent);
       }
-      //Analyze the cart => Find existing Product
       const existingProductIndex = cart.products.findIndex(
-        (prod) => prod.id === id
+        (item) => item.id === id
       );
       const existingProduct = cart.products[existingProductIndex];
       let updatedProduct;
       if (existingProduct) {
-        //add new product/increase quantity
         updatedProduct = { ...existingProduct };
         updatedProduct.qty = updatedProduct.qty + 1;
-        cart.products = [...cart.products]; //test delete it
+        cart.products = [...cart.products];
         cart.products[existingProductIndex] = updatedProduct;
       } else {
-        updatedProduct = { id: id, qty: 1 };
+        updatedProduct = { id: id, qty: 1, price: Number(productPrice) };
         cart.products = [...cart.products, updatedProduct];
       }
       cart.totalPrice = Number(cart.totalPrice) + Number(productPrice);
+      console.log(cart);
       fs.writeFile(p, JSON.stringify(cart), (err) => {
         console.log(err);
       });
