@@ -1,7 +1,4 @@
 {
-  "products": [
-    { "id": "0.8368280888196431", "qty": 2, "price": 39.99 },
-    { "id": "32323", "qty": 1, "price": 49.99 }
-  ],
-  "totalPrice": 129.97
+  "products": [{ "id": "32323", "qty": 1, "price": 49.99 }],
+  "totalPrice": 49.99
 }

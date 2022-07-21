@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+const Cart = require("../../node-complete-guide/models/cart");
 const rootDir = require("../util/path");
 const p = path.join(rootDir, "data", "products.json");
 
@@ -42,6 +43,19 @@ module.exports = class Product {
           console.log(err);
         });
       }
+    });
+  }
+
+  static deleteById(id) {
+    getProductsFromFile((products) => {
+      const product = products.find((item) => item.id === id);
+      const updatedProducts = products.filter((item) => item.id !== id);
+
+      fs.writeFile(p, JSON.stringify(updatedProducts), (err) => {
+        if (!err) {
+          Cart.deleteProduct(id, product.price);
+        }
+      });
     });
   }
 

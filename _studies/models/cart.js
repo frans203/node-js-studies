@@ -31,4 +31,32 @@ module.exports = class Cart {
       });
     });
   }
+
+  static deleteteProduct(id, productPrice) {
+    fs.readFile(p, (err, fileContent) => {
+      let cart = { products: [], totalPrice };
+      if (!err) {
+        cart = JSON.parse(fileContent);
+      } else {
+        return;
+      }
+      const updatedCart = { ...cart };
+      const product = updatedCart.products.find((item) => item.id === id);
+      const productQty = product.qty;
+      updatedCart.products = updatedCart.products.filter(
+        (item) => item.id !== id
+      );
+      if (updatedCart.totalPrice - productQty * productPrice < 0) {
+        updatedCart.totalPrice = 0;
+      } else {
+        updatedCart.totalPrice =
+          updatedCart.totalPrice - productQty * productPrice;
+      }
+
+      cart.products = updatedCart.products;
+      fs.writeFile(p, JSON.stringify(cart), (err) => {
+        console.log(err);
+      });
+    });
+  }
 };
