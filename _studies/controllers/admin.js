@@ -11,7 +11,6 @@ exports.getAddProduct = (req, res, next) => {
 exports.getEditProduct = (req, res, next) => {
   const editMode = req.query.edit;
   const editModeBool = editMode === "true";
-  console.log(editModeBool, req.params.productId);
   if (!editModeBool) {
     return res.redirect("/");
   }
@@ -30,7 +29,6 @@ exports.getEditProduct = (req, res, next) => {
 };
 
 exports.postEditProduct = (req, res, next) => {
-  console.log("payload", req.body);
   const prodId = req.body.productId;
   const updatedTitle = req.body.title;
   const updatedDescription = req.body.description;
