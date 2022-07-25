@@ -5,7 +5,10 @@ const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
 const expressHbs = require("express-handlebars");
 const errorController = require("./controllers/error");
+const db = require("./util/database");
 const app = express();
+
+db.execute("SELECT * FROM products").then().catch();
 
 //REMEMBER: LEAVE EVERYTHING ABOUT EJS ONLY, WHEN GO TO STUDIES
 
