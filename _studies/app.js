@@ -5,9 +5,7 @@ const app = express();
 const shopRoutes = require("./routes/shop");
 const adminRoutes = require("./routes/admin");
 const errorController = require("./controllers/error");
-const db = require("./util/database");
-
-db.execute("SELECT * FROM products").then().catch();
+const sequelize = require("./util/database");
 
 app.set("view engine", "ejs");
 app.set("views", "views");
@@ -19,6 +17,9 @@ app.use("/admin", adminRoutes);
 
 app.use(errorController.error);
 
-app.listen(3000);
-
-//stopped in post function for products
+sequelize
+  .sync()
+  .then((result) => {
+    app.listen(3000);
+  })
+  .catch((e) => console.log(e));
