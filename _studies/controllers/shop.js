@@ -118,12 +118,12 @@ exports.postCartDeleteProduct = (req, res, next) => {
       if (products.length > 0) {
         product = products[0];
       }
+      return product.cartItem.destroy();
+    })
+    .then((result) => {
+      res.redirect("/cart");
     })
     .catch((e) => {
       console.log(e);
     });
-  Product.findById(singleProductId, (product) => {
-    Cart.deleteProduct(singleProductId, product.price);
-    res.redirect("/cart");
-  });
 };

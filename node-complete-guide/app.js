@@ -11,6 +11,8 @@ const Product = require("./models/product");
 const User = require("./models/user");
 const Cart = require("./models/cart");
 const CartItem = require("./models/cart-item");
+const Order = require("./models/order");
+const OrderItem = require("./models/order-item");
 
 //REMEMBER: LEAVE EVERYTHING ABOUT EJS ONLY, WHEN GO TO STUDIES
 
@@ -49,10 +51,13 @@ User.hasOne(Cart);
 Cart.belongsTo(User); //optional, because one direction is enough
 Cart.belongsToMany(Product, { through: CartItem }); //through: telling sequelize where these relations need to be stored
 Product.belongsToMany(Cart, { through: CartItem });
+Order.belongsTo(User);
+User.hasMany(Order);
+Order.belongsToMany(Product, { through: OrderItem });
 
 sequelize
-  // .sync({ force: true })
-  .sync()
+  .sync({ force: true })
+  // .sync()
   .then((result) => {
     return User.findByPk(1);
   })
@@ -63,10 +68,6 @@ sequelize
     return Promise.resolve(user);
   })
   .then((user) => {
-    // console.log(user);
-    if (user.getCart()) {
-      return;
-    }
     return user.createCart();
   })
   .then((cart) => {

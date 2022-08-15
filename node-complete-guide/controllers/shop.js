@@ -129,21 +129,23 @@ exports.postCart = (req, res, next) => {
 };
 
 exports.postCartDeleteProduct = (req, res, next) => {
-  const prodId = req.body.productId;
+  const singleProductId = req.body.productId;
   req.user
     .getCart()
     .then((cart) => {
-      return cart.getProducts({ where: { id: prodId } });
+      return cart.getProducts({ where: { id: singleProductId } });
     })
     .then((products) => {
       let product;
       if (products.length > 0) {
         product = products[0];
       }
+      return product.cartItem.destroy();
     })
-    .catch((e) => console.log(e));
-  Product.findById(prodId, (product) => {
-    Cart.deleteProduct(prodId, product.price);
-    res.redirect("/cart");
-  });
+    .then((result) => {
+      res.redirect("/cart");
+    })
+    .catch((e) => {
+      console.log(e);
+    });
 };
