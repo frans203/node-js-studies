@@ -200,6 +200,11 @@ form {
   background-color: #00695c;
   color: white;
 }
+.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
 @media (min-width: 768px) {
   .main-header__nav {
