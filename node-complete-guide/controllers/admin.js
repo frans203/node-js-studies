@@ -86,16 +86,14 @@ exports.postAddProduct = (req, res, next) => {
 //     .catch((e) => console.log(e));
 // };
 
-// exports.getProducts = (req, res, next) => {
-//   // req.user;
-//   // .getProducts()
-//   Product.findAll()
-//     .then((products) => {
-//       res.render("admin/products", {
-//         prods: products,
-//         pageTitle: "Admin Products",
-//         path: "/admin/products",
-//       });
-//     })
-//     .catch((e) => console.log(e));
-// };
+exports.getProducts = (req, res, next) => {
+  Product.fetchAll()
+    .then((products) => {
+      res.render("admin/products", {
+        prods: products,
+        pageTitle: "Admin Products",
+        path: "/admin/products",
+      });
+    })
+    .catch((e) => console.log(e));
+};

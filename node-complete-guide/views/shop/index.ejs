@@ -22,6 +22,8 @@
                             <p class="product__description"><%= product.description %></p>
                         </div>
                         <div class="card__actions">
+  <input type="hidden" name="productId" value="<%= product._id %>" />
+
                            <%- include("../includes/add-to-cart.ejs", {product:product}) %>
                         </div>
                     </article>

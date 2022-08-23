@@ -12,18 +12,18 @@ exports.getProducts = (req, res, next) => {
     .catch((e) => console.log(e));
 };
 
-// exports.getSingleProduct = (req, res, next) => {
-//   const singleProductId = req.params.productId;
-//   Product.findByPk(singleProductId)
-//     .then((product) => {
-//       res.render("shop/product-detail", {
-//         pageTitle: product.title,
-//         path: "/products",
-//         product: product,
-//       });
-//     })
-//     .catch((e) => console.log(e));
-// };
+exports.getSingleProduct = (req, res, next) => {
+  const singleProductId = req.params.productId;
+  Product.findById(singleProductId)
+    .then((product) => {
+      res.render("shop/product-detail", {
+        pageTitle: product.title,
+        path: "/products",
+        product: product,
+      });
+    })
+    .catch((e) => console.log(e));
+};
 
 exports.getIndex = (req, res, next) => {
   Product.fetchAll()
