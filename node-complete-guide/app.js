@@ -3,6 +3,7 @@ const path = require("path");
 const bodyParser = require("body-parser");
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
+const User = require("./models/user");
 
 const errorController = require("./controllers/error");
 const mongoConntect = require("./util/database").mongoConnect;
@@ -26,13 +27,13 @@ app.set("views", "views"); //views is the default path for the views on the app 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public"))); //user is able to access public path trough html files
 app.use((req, res, next) => {
-  // User.findByPk(1)
-  //   .then((user) => {
-  //     req.user = user;
-  //     next();
-  //   })
-  //   .catch((e) => console.log(e));
-  next();
+  User.findById("630ca8091670d79d41d1ec49")
+    .then((user) => {
+      console.log("finding user", user);
+      req.user = new User(user.name, user.email, user.cart, user._id);
+      next();
+    })
+    .catch((e) => console.log(e));
 });
 
 app.use(shopRoutes);

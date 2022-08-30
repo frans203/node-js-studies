@@ -22,7 +22,7 @@ const getDb = () => {
   if (_db) {
     return _db;
   } else {
-    throw "Database not found";
+    throw "No database found";
   }
 };
 
