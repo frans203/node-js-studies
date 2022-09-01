@@ -29,7 +29,6 @@ app.use(express.static(path.join(__dirname, "public"))); //user is able to acces
 app.use((req, res, next) => {
   User.findById("630ca8091670d79d41d1ec49")
     .then((user) => {
-      console.log("finding user", user);
       req.user = new User(user.name, user.email, user.cart, user._id);
       next();
     })

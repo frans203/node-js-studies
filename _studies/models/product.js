@@ -62,14 +62,21 @@ class Product {
       });
   }
 
-  static deleteById(productId) {
+  static deleteById(productId, userId) {
     const db = getDb();
 
     return db
       .collection("products")
       .deleteOne({ _id: new mongodb.ObjectId(productId) })
       .then(() => {
-        console.log("deleted product");
+        return db.collection("users").updateOne(
+          { _id: new mongodb.ObjectId(userId) },
+          {
+            $pull: {
+              "cart.items": { productId: new mongodb.ObjectId(productId) },
+            },
+          }
+        );
       })
       .catch((e) => {
         console.log(e);
