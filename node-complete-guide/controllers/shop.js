@@ -41,18 +41,12 @@ exports.getIndex = (req, res, next) => {
 exports.getCart = (req, res, next) => {
   req.user
     .getCart()
-    .then((cart) => {
-      return cart
-        .getProducts()
-        .then((products) => {
-          res.render("shop/cart", {
-            path: "/cart",
-            pageTitle: "Your Cart",
-            products: products,
-          });
-        })
-        .catch(e);
-      //to get the cart we need to use the getCart() method, available after relations applied
+    .then((products) => {
+      res.render("shop/cart", {
+        path: "/cart",
+        pageTitle: "Your Cart",
+        products: products,
+      });
     })
     .catch((e) => console.log(e));
   // Cart.getCart((cart) => {
@@ -79,7 +73,7 @@ exports.getCart = (req, res, next) => {
 };
 
 exports.getOrders = (req, res, next) => {
-  req.user.getOrders({ include: ["products"] }).then((orders) => {
+  req.user.getOrders().then((orders) => {
     res.render("shop/orders", {
       path: "/orders",
       pageTitle: "Your Orders",
@@ -91,31 +85,11 @@ exports.getOrders = (req, res, next) => {
 exports.postOrder = (req, res, next) => {
   let fetchedCart;
   req.user
-    .getCart()
-    .then((cart) => {
-      fetchedCart = cart;
-      return cart.getProducts();
+    .addOrder()
+    .then(() => {
+      res.redirect("/orders");
     })
-    .then((products) => {
-      return req.user
-        .createOrder()
-        .then((order) => {
-          return order.addProducts(
-            products.map((product) => {
-              product.orderItem = { quantity: product.cartItem.quantity };
-              return product;
-            })
-          );
-        })
-        .then((result) => {
-          return fetchedCart.setProducts(null); //delete all products
-        })
-        .then(() => {
-          res.redirect("/orders");
-        })
-        .catch((e) => console.log(e));
-    })
-    .catch((err) => console.log(err));
+    .catch((e) => console.log(e));
 };
 
 exports.postCart = (req, res, next) => {
@@ -126,6 +100,7 @@ exports.postCart = (req, res, next) => {
     })
     .then((result) => {
       console.log(result);
+      res.redirect("/cart");
     });
 
   // req.user
@@ -161,17 +136,7 @@ exports.postCart = (req, res, next) => {
 exports.postCartDeleteProduct = (req, res, next) => {
   const singleProductId = req.body.productId;
   req.user
-    .getCart()
-    .then((cart) => {
-      return cart.getProducts({ where: { id: singleProductId } });
-    })
-    .then((products) => {
-      let product;
-      if (products.length > 0) {
-        product = products[0];
-      }
-      return product.cartItem.destroy();
-    })
+    .deleteItemFromCart(singleProductId)
     .then((result) => {
       res.redirect("/cart");
     })
