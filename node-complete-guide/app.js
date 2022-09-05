@@ -4,9 +4,9 @@ const bodyParser = require("body-parser");
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
 const User = require("./models/user");
+const mongoose = require("mongoose");
 
 const errorController = require("./controllers/error");
-const mongoConntect = require("./util/database").mongoConnect;
 const app = express();
 
 //REMEMBER: LEAVE EVERYTHING ABOUT EJS ONLY, WHEN GO TO STUDIES
@@ -40,6 +40,13 @@ app.use("/admin", adminRoutes);
 
 app.use(errorController.get404);
 
-mongoConntect(() => {
-  app.listen(3000);
-});
+mongoose
+  .connect(
+    "mongodb+srv://admin:1234@cluster0.hkjnjx2.mongodb.net/?retryWrites=true&w=majority"
+  )
+  .then(() => {
+    app.listen(3000);
+  })
+  .catch((e) => {
+    console.log(e);
+  });

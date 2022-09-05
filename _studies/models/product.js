@@ -1,87 +1,108 @@
-const getDb = require("../util/database").getDb;
-const mongodb = require("mongodb");
+const mongoose = require("mongoose");
 
-class Product {
-  constructor(title, price, description, imageUrl, id, userId) {
-    this.title = title;
-    this.description = description;
-    this.imageUrl = imageUrl;
-    this.price = price;
-    this._id = id ? new mongodb.ObjectId(id) : null;
-    this.userId = new mongodb.ObjectId(userId);
-  }
+const Schema = mongoose.Schema;
 
-  save() {
-    const db = getDb();
-    let dbOp;
+const productSchema = new Schema({
+  title: {
+    type: String,
+    required: true,
+  },
+  description: {
+    type: String,
+  },
+  price: {
+    type: Number,
+    required: true,
+  },
+  imageUrl: {
+    type: String,
+    required: true,
+  },
+});
+// const getDb = require("../util/database").getDb;
+// const mongodb = require("mongodb");
 
-    if (this._id) {
-      dbOp = db
-        .collection("products")
-        .updateOne({ _id: this._id }, { $set: this });
-    } else {
-      dbOp = db.collection("products").insertOne(this);
-    }
+// class Product {
+//   constructor(title, price, description, imageUrl, id, userId) {
+//     this.title = title;
+//     this.description = description;
+//     this.imageUrl = imageUrl;
+//     this.price = price;
+//     this._id = id ? new mongodb.ObjectId(id) : null;
+//     this.userId = new mongodb.ObjectId(userId);
+//   }
 
-    return dbOp
-      .then((result) => {
-        return result;
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-  }
+//   save() {
+//     const db = getDb();
+//     let dbOp;
 
-  static fetchAll() {
-    const db = getDb();
+//     if (this._id) {
+//       dbOp = db
+//         .collection("products")
+//         .updateOne({ _id: this._id }, { $set: this });
+//     } else {
+//       dbOp = db.collection("products").insertOne(this);
+//     }
 
-    return db
-      .collection("products")
-      .find()
-      .toArray()
-      .then((products) => {
-        return products;
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-  }
+//     return dbOp
+//       .then((result) => {
+//         return result;
+//       })
+//       .catch((e) => {
+//         console.log(e);
+//       });
+//   }
 
-  static findById(productId) {
-    const db = getDb();
+//   static fetchAll() {
+//     const db = getDb();
 
-    return db
-      .collection("products")
-      .find({ _id: new mongodb.ObjectId(productId) })
-      .next()
-      .then((product) => {
-        return product;
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-  }
+//     return db
+//       .collection("products")
+//       .find()
+//       .toArray()
+//       .then((products) => {
+//         return products;
+//       })
+//       .catch((e) => {
+//         console.log(e);
+//       });
+//   }
 
-  static deleteById(productId, userId) {
-    const db = getDb();
+//   static findById(productId) {
+//     const db = getDb();
 
-    return db
-      .collection("products")
-      .deleteOne({ _id: new mongodb.ObjectId(productId) })
-      .then(() => {
-        return db.collection("users").updateOne(
-          { _id: new mongodb.ObjectId(userId) },
-          {
-            $pull: {
-              "cart.items": { productId: new mongodb.ObjectId(productId) },
-            },
-          }
-        );
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-  }
-}
+//     return db
+//       .collection("products")
+//       .find({ _id: new mongodb.ObjectId(productId) })
+//       .next()
+//       .then((product) => {
+//         return product;
+//       })
+//       .catch((e) => {
+//         console.log(e);
+//       });
+//   }
 
-module.exports = Product;
+//   static deleteById(productId, userId) {
+//     const db = getDb();
+
+//     return db
+//       .collection("products")
+//       .deleteOne({ _id: new mongodb.ObjectId(productId) })
+//       .then(() => {
+//         return db.collection("users").updateOne(
+//           { _id: new mongodb.ObjectId(userId) },
+//           {
+//             $pull: {
+//               "cart.items": { productId: new mongodb.ObjectId(productId) },
+//             },
+//           }
+//         );
+//       })
+//       .catch((e) => {
+//         console.log(e);
+//       });
+//   }
+// }
+
+// module.exports = Product;
