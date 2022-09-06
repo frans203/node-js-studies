@@ -13,14 +13,14 @@ app.set("views", "views");
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 app.use((req, res, next) => {
-  User.findById("630ca8091670d79d41d1ec49")
+  User.findById("631685105b28fbd0142e0f62")
     .then((user) => {
-      req.user = new User(user.name, user.email, user.cart, user._id);
+      console.log(user);
+      req.user = user;
       next();
     })
     .catch((e) => console.log(e));
 });
-
 app.use(shopRoutes);
 app.use("/admin", adminRoutes);
 
@@ -31,6 +31,17 @@ mongoose
     "mongodb+srv://admin:1234@cluster0.hkjnjx2.mongodb.net/?retryWrites=true&w=majority"
   )
   .then(() => {
+    User.findOne().then((user) => {
+      if (!user) {
+        const newUser = new User({
+          name: "Santana",
+          email: "test@gmail.com",
+          cart: { items: [] },
+        });
+
+        newUser.save();
+      }
+    });
     app.listen(3000);
   })
   .catch((e) => {

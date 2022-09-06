@@ -18,7 +18,13 @@ const productSchema = new Schema({
     type: String,
     required: true,
   },
+  userId: {
+    type: mongoose.Types.ObjectId,
+    ref: "User",
+  },
 });
+
+module.exports = mongoose.model("Product", productSchema);
 // const getDb = require("../util/database").getDb;
 // const mongodb = require("mongodb");
 

@@ -10,8 +10,7 @@ exports.getAddProduct = (req, res, next) => {
 
 exports.postDeleteProduct = (req, res, next) => {
   const prodId = req.body.productId;
-  const userId = req.user._id;
-  Product.deleteById(prodId, userId)
+  Product.findByIdAndRemove(prodId)
     .then(() => {
       console.log("destroyed product");
       res.redirect("/admin/products");
@@ -25,14 +24,13 @@ exports.postAddProduct = (req, res, next) => {
   const imageUrl = req.body.imageUrl;
   const price = req.body.price;
   const description = req.body.description;
-  const product = new Product(
+  const product = new Product({
     title,
-    price,
-    description,
     imageUrl,
-    null,
-    req.user._id
-  );
+    description,
+    price,
+    userId: req.user, //only the user id will be added thanks to mongoose
+  });
 
   product
     .save()
@@ -74,15 +72,14 @@ exports.postEditProduct = (req, res, next) => {
   const updatedImageUrl = req.body.imageUrl;
   const updatedDescription = req.body.description;
 
-  const product = new Product(
-    updatedTitle,
-    updatedPrice,
-    updatedDescription,
-    updatedImageUrl,
-    prodId
-  );
-  return product
-    .save()
+  Product.findById(prodId)
+    .then((product) => {
+      product.title = updatedTitle;
+      product.price = updatedPrice;
+      product.imageUrl = updatedImageUrl;
+      product.description = updatedDescription;
+      return product.save();
+    })
     .then((result) => {
       console.log("updated product");
       res.redirect("/admin/products");
@@ -91,7 +88,9 @@ exports.postEditProduct = (req, res, next) => {
 };
 
 exports.getProducts = (req, res, next) => {
-  Product.fetchAll()
+  Product.find()
+    // .select("title price -_id")
+    // .populate("userId", "name")
     .then((products) => {
       res.render("admin/products", {
         prods: products,
