@@ -1,4 +1,5 @@
 const Product = require("../models/product");
+const Order = require("../models/order");
 exports.getProducts = (req, res, next) => {
   Product.find()
     .then((products) => {
@@ -55,8 +56,7 @@ exports.getCart = (req, res, next) => {
 };
 
 exports.getOrders = (req, res, next) => {
-  req.user
-    .getOrders()
+  Order.find({ "user.userId": req.user._id })
     .then((orders) => {
       res.render("shop/orders", {
         pageTitle: "Orders",
@@ -68,13 +68,28 @@ exports.getOrders = (req, res, next) => {
 };
 
 exports.postOrder = (req, res, next) => {
-  let fetchedCart;
   req.user
-    .addOrder()
-    .then(() => {
-      res.redirect("/orders");
+    .populate("cart.items.productId")
+    .then((user) => {
+      const cartProducts = user.cart.items.map((item) => {
+        return { quantity: item.quantity, product: { ...item.productId } };
+      });
+      const order = new Order({
+        user: { name: req.user.name, userId: req.user._id },
+        products: cartProducts,
+      });
+
+      return order.save();
     })
-    .catch((e) => console.log(e));
+    .then(() => {
+      return req.user.clearCart();
+    })
+    .then(() => {
+      return res.redirect("/orders");
+    })
+    .catch((e) => {
+      console.log(e);
+    });
 };
 
 exports.postCart = (req, res, next) => {

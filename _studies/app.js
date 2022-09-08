@@ -31,6 +31,8 @@ mongoose
     "mongodb+srv://admin:1234@cluster0.hkjnjx2.mongodb.net/?retryWrites=true&w=majority"
   )
   .then(() => {
+    console.log("DATABASE CONNECTED");
+
     User.findOne().then((user) => {
       if (!user) {
         const newUser = new User({
@@ -43,6 +45,7 @@ mongoose
       }
     });
     app.listen(3000);
+    console.log("SERVER RUNNING");
   })
   .catch((e) => {
     console.log(e);
