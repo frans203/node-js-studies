@@ -3,6 +3,7 @@ const path = require("path");
 const bodyParser = require("body-parser");
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
+const loginRoutes = require("./routes/login");
 const User = require("./models/user");
 const mongoose = require("mongoose");
 
@@ -37,6 +38,7 @@ app.use((req, res, next) => {
 
 app.use(shopRoutes);
 app.use("/admin", adminRoutes);
+app.use(loginRoutes);
 
 app.use(errorController.get404);
 
@@ -45,6 +47,7 @@ mongoose
     "mongodb+srv://admin:1234@cluster0.hkjnjx2.mongodb.net/?retryWrites=true&w=majority"
   )
   .then(() => {
+    console.log("DB CONNECTED");
     User.findOne().then((user) => {
       if (!user) {
         const user = new User({
@@ -55,7 +58,7 @@ mongoose
         user.save();
       }
     });
-
+    console.log("SERVER RUNNING");
     app.listen(3000);
   })
   .catch((e) => {

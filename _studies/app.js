@@ -3,6 +3,7 @@ const bodyParser = require("body-parser");
 const path = require("path");
 const shopRoutes = require("./routes/shop");
 const adminRoutes = require("./routes/admin");
+const loginRoutes = require("./routes/login");
 const errorController = require("./controllers/error");
 const mongoose = require("mongoose");
 const app = express();
@@ -15,7 +16,6 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use((req, res, next) => {
   User.findById("631685105b28fbd0142e0f62")
     .then((user) => {
-      console.log(user);
       req.user = user;
       next();
     })
@@ -23,6 +23,7 @@ app.use((req, res, next) => {
 });
 app.use(shopRoutes);
 app.use("/admin", adminRoutes);
+app.use(loginRoutes);
 
 app.use(errorController.error);
 

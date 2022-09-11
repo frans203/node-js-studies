@@ -8,6 +8,7 @@ exports.getProducts = (req, res, next) => {
         pageTitle: "Shop",
         path: "/products",
         hasProducts: products.length > 0,
+        isAuthenticated: req.isLoggedIn,
       });
     })
     .catch((e) => console.log(e));
@@ -21,6 +22,7 @@ exports.getSingleProduct = (req, res, next) => {
         pageTitle: product.title,
         path: "/products",
         product: product,
+        isAuthenticated: req.isLoggedIn,
       });
     })
     .catch((e) => console.log(e));
@@ -33,6 +35,7 @@ exports.getIndex = (req, res, next) => {
         prods: products,
         pageTitle: "Shop",
         path: "/",
+        isAuthenticated: req.isLoggedIn,
       });
     })
     .catch((e) => console.log(e));
@@ -48,6 +51,7 @@ exports.getCart = (req, res, next) => {
         products: products.cart.items,
         pageTitle: "Your cart",
         path: "/cart",
+        isAuthenticated: req.isLoggedIn,
       });
     })
     .catch((e) => {
@@ -62,6 +66,7 @@ exports.getOrders = (req, res, next) => {
         pageTitle: "Orders",
         path: "/orders",
         orders,
+        isAuthenticated: req.isLoggedIn,
       });
     })
     .catch((e) => console.log(e));
@@ -110,7 +115,6 @@ exports.postCart = (req, res, next) => {
 
 exports.postCartDeleteProduct = (req, res, next) => {
   const singleProductId = req.body.productId;
-  console.log("single product id", singleProductId);
   req.user
     .deleteItemFromCart(singleProductId)
     .then((result) => {
