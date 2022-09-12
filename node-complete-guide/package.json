@@ -16,9 +16,11 @@
   "dependencies": {
     "@types/sequelize": "^4.28.14",
     "body-parser": "^1.20.0",
+    "connect-mongodb-session": "^3.1.1",
     "ejs": "^3.1.8",
     "express": "^4.18.1",
     "express-handlebars": "3.0",
+    "express-session": "^1.17.3",
     "mongodb": "^4.9.0",
     "mongoose": "^6.5.4",
     "mysql2": "^2.3.3",

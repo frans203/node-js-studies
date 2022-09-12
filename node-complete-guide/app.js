@@ -6,9 +6,16 @@ const shopRoutes = require("./routes/shop");
 const loginRoutes = require("./routes/login");
 const User = require("./models/user");
 const mongoose = require("mongoose");
-
+const session = require("express-session");
+const MongoDbStore = require("connect-mongodb-session")(session);
+const MONGODB_URI =
+  "mongodb+srv://admin:1234@cluster0.hkjnjx2.mongodb.net/?retryWrites=true&w=majority";
 const errorController = require("./controllers/error");
 const app = express();
+const store = new MongoDbStore({
+  uri: MONGODB_URI,
+  collection: "sessions",
+});
 
 //REMEMBER: LEAVE EVERYTHING ABOUT EJS ONLY, WHEN GO TO STUDIES
 
@@ -27,8 +34,20 @@ app.set("views", "views"); //views is the default path for the views on the app 
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public"))); //user is able to access public path trough html files
+app.use(
+  session({
+    secret: "my secret",
+    resave: false,
+    saveUninitialized: false,
+    store: store,
+  })
+);
+
 app.use((req, res, next) => {
-  User.findById("631685105b28fbd0142e0f62")
+  if (!req.session.user) {
+    return next();
+  }
+  User.findById(req.session.user._id)
     .then((user) => {
       req.user = user;
       next();
@@ -43,9 +62,7 @@ app.use(loginRoutes);
 app.use(errorController.get404);
 
 mongoose
-  .connect(
-    "mongodb+srv://admin:1234@cluster0.hkjnjx2.mongodb.net/?retryWrites=true&w=majority"
-  )
+  .connect(MONGODB_URI)
   .then(() => {
     console.log("DB CONNECTED");
     User.findOne().then((user) => {
