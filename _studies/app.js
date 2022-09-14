@@ -50,20 +50,8 @@ mongoose
   .connect(MONGODB_URI)
   .then(() => {
     console.log("DATABASE CONNECTED");
-
-    User.findOne().then((user) => {
-      if (!user) {
-        const newUser = new User({
-          name: "Santana",
-          email: "test@gmail.com",
-          cart: { items: [] },
-        });
-
-        newUser.save();
-      }
-    });
-    app.listen(3000);
     console.log("SERVER RUNNING");
+    app.listen(3000);
   })
   .catch((e) => {
     console.log(e);

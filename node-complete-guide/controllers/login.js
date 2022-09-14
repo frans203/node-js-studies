@@ -17,10 +17,11 @@ exports.postLogin = (req, res, next) => {
     .then((data) => {
       req.session.user = data;
       req.session.isLoggedIn = true;
+      req.session.save((err) => {
+        console.log(err);
+        res.redirect("/");
+      });
       return data;
-    })
-    .then(() => {
-      res.redirect("/");
     })
     .catch((e) => {
       console.log(e);
@@ -32,4 +33,39 @@ exports.postLogout = (req, res, next) => {
     console.log(err);
     res.redirect("/");
   });
+};
+
+exports.getSignup = (req, res, next) => {
+  res.render("auth/signup", {
+    pageTitle: "SignUp",
+    path: "/signup",
+    isAuthenticated: false,
+  });
+};
+
+exports.postSignup = (req, res, next) => {
+  const email = req.body.email;
+  const password = req.body.password;
+  const confirmPassword = req.body.confirmPassword;
+  console.log(email, password);
+  User.findOne({ email: email })
+    .then((userDoc) => {
+      if (userDoc) {
+        return res.redirect("/signup");
+      }
+
+      const user = new User({
+        email: email,
+        password: password,
+        cart: { items: [] },
+      });
+
+      return user.save();
+    })
+    .then(() => {
+      res.redirect("/login");
+    })
+    .catch((e) => {
+      console.log(e);
+    });
 };
