@@ -12,10 +12,13 @@ const MONGODB_URI =
   "mongodb+srv://admin:1234@cluster0.hkjnjx2.mongodb.net/?retryWrites=true&w=majority";
 const errorController = require("./controllers/error");
 const app = express();
+const csrf = require("csurf");
 const store = new MongoDbStore({
   uri: MONGODB_URI,
   collection: "sessions",
 });
+
+const csrfProtection = csrf({});
 
 //REMEMBER: LEAVE EVERYTHING ABOUT EJS ONLY, WHEN GO TO STUDIES
 
@@ -42,6 +45,7 @@ app.use(
     store: store,
   })
 );
+app.use(csrfProtection);
 
 app.use((req, res, next) => {
   if (!req.session.user) {
@@ -53,6 +57,12 @@ app.use((req, res, next) => {
       next();
     })
     .catch((e) => console.log(e));
+});
+
+app.use((req, res, next) => {
+  res.locals.isAuthenticated = req.session.isLoggedIn;
+  res.locals.csrfToken = req.csrfToken();
+  next();
 });
 
 app.use(shopRoutes);

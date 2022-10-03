@@ -1,31 +1,39 @@
 const User = require("../models/user");
+const bcrypt = require("bcryptjs");
 
 exports.getLogin = (req, res, next) => {
   const isLoggedIn = req.get("Cookie").split(";")[6].split("=")[1] === "true";
-  console.log(isLoggedIn);
 
   res.render("auth/login", {
     pageTitle: "Auth Login",
     path: "/login",
-    isAuthenticated: isLoggedIn,
   });
 };
 
 exports.postLogin = (req, res, next) => {
-  const bodyEmail = req.body.email;
-  User.findOne({ email: bodyEmail })
+  const email = req.body.email;
+  const password = req.body.password;
+  User.findOne({ email: email })
     .then((result) => result)
-    .then((user) => {
-      req.session.user = user;
-      req.session.isLoggedIn = true;
-      req.session.save((err) => {
-        console.log(err);
-        res.redirect("/");
+    .then((data) => {
+      if (!data) {
+        return res.redirect("/login");
+      }
+
+      bcrypt.compare(password, data.password).then((result) => {
+        if (result) {
+          req.session.isLoggedIn = true;
+          req.session.user = data;
+          return req.session.save((err) => {
+            console.log(err);
+            return res.redirect("/");
+          });
+        }
       });
-      return user;
     })
     .catch((e) => {
       console.log(e);
+      res.redirect("/login");
     });
 };
 
@@ -40,7 +48,6 @@ exports.getSignup = (req, res, next) => {
   res.render("auth/signup", {
     pageTitle: "Signup",
     path: "/signup",
-    isAuthenticated: false,
   });
 };
 

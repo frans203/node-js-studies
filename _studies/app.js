@@ -10,6 +10,8 @@ const app = express();
 const User = require("./models/user");
 const session = require("express-session");
 const MongoDbStore = require("connect-mongodb-session")(session);
+const csrf = require("csurf");
+const csrfProtection = csrf({});
 
 const MONGODB_URI =
   "mongodb+srv://admin:1234@cluster0.hkjnjx2.mongodb.net/?retryWrites=true&w=majority";
@@ -28,6 +30,7 @@ app.use(
     store: store,
   })
 );
+app.use(csrfProtection);
 
 app.use((req, res, next) => {
   if (!req.session.user) {
@@ -40,6 +43,12 @@ app.use((req, res, next) => {
     })
     .catch((e) => console.log(e));
 });
+
+app.use((req, res, next) => {
+  res.locals.isAuthenticated = req.session.isLoggedIn;
+  res.locals.csrfToken = req.csrfToken();
+});
+
 app.use(shopRoutes);
 app.use("/admin", adminRoutes);
 app.use(loginRoutes);
