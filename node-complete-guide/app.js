@@ -17,6 +17,7 @@ const store = new MongoDbStore({
   uri: MONGODB_URI,
   collection: "sessions",
 });
+const flash = require("connect-flash");
 
 const csrfProtection = csrf({});
 
@@ -46,6 +47,7 @@ app.use(
   })
 );
 app.use(csrfProtection);
+app.use(flash());
 
 app.use((req, res, next) => {
   if (!req.session.user) {
