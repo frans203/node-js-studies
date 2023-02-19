@@ -8,6 +8,7 @@ router.get("/products", shopController.getProducts);
 router.get("/products/:productId", shopController.getSingleProduct);
 router.get("/cart", isAuth, isAuth, shopController.getCart);
 router.get("/orders", isAuth, shopController.getOrders);
+router.get("/checkout", isAuth, shopController.getCheckout);
 
 router.post("/cart", isAuth, shopController.postCart);
 router.post("/cart-delete-item", isAuth, shopController.postCartDeleteProduct);
